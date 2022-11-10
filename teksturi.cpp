@@ -9,12 +9,13 @@ teksturi::teksturi(QWidget *parent)
 {
     ui->setupUi(this);
     ui->tiedostoLista->clear();
-    TiedostoOhjain testi = TiedostoOhjain("testi yksi","testi1");
+    TiedostoOhjain testi = TiedostoOhjain("testi yksi","File alavalikon alla olevat jutut toimii, muita ei ole vielä toteutettu");
     TiedostoOhjain kaksi = TiedostoOhjain("testi kaksi","testi2");
     TiedostoOhjain kolme = TiedostoOhjain("testi kolme","testi3");
 
     avoimetTiedostot = {testi,kaksi,kolme};
     updatetiedostoLista();
+
     connect(ui->tiedostoLista, &QListWidget::itemSelectionChanged, this, [=](){
         //qDebug()<< ui->tiedostoLista->currentItem()->text();
         ui->teksti->setText(avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto);
@@ -22,6 +23,8 @@ teksturi::teksturi(QWidget *parent)
     connect(ui->teksti, &QTextEdit::textChanged, this, [=](){
         avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto = ui->teksti->toPlainText();
     });
+    ui->tiedostoLista->setCurrentRow(0);
+
 }
 
 teksturi::~teksturi()
