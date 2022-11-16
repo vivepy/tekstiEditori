@@ -100,7 +100,9 @@ void teksturi::on_actionNew_File_triggered()
 void teksturi::on_actionClose_file_triggered()
 {
     if(avoimetTiedostot.count() < 2){
+        //qDebug()<<"vika";
         QApplication::quit();
+        return;
     }
     avoimetTiedostot.removeAt(ui->tiedostoLista->currentRow());
     ui->tiedostoLista->setCurrentRow(0);
