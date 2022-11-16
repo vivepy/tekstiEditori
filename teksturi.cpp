@@ -2,6 +2,8 @@
 #include "./ui_teksturi.h"
 #include "QSizePolicy"
 #include "QtDebug"
+#include "QTimer"
+
 
 teksturi::teksturi(QWidget *parent)
     : QMainWindow(parent)
@@ -9,6 +11,16 @@ teksturi::teksturi(QWidget *parent)
 {
     ui->setupUi(this);
     ui->tiedostoLista->clear();
+
+//    QTimer muutosAjastin;
+//    muutosAjastin.setSingleShot(true);
+//    muutosAjastin.callOnTimeout();
+    QTimer *muutosAjastin = new QTimer(this);
+    muutosAjastin->setSingleShot(true);
+    connect(muutosAjastin, &QTimer::timeout, this, &teksturi::muutosListaaja);
+
+
+
     TiedostoOhjain testi = TiedostoOhjain("testi yksi","File alavalikon alla olevat jutut toimii, muita ei ole vielä toteutettu");
     TiedostoOhjain kaksi = TiedostoOhjain("testi kaksi","testi2");
     TiedostoOhjain kolme = TiedostoOhjain("testi kolme","testi3");
@@ -21,7 +33,7 @@ teksturi::teksturi(QWidget *parent)
         ui->teksti->setText(avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto);
     });
     connect(ui->teksti, &QTextEdit::textChanged, this, [=](){
-        avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto = ui->teksti->toPlainText();
+        muutosAjastin->start(750);
     });
     ui->tiedostoLista->setCurrentRow(0);
 
@@ -121,3 +133,21 @@ void teksturi::updatetiedostoLista(){
         ui->tiedostoLista->addItem(avoimetTiedostot[i].tiedostoNimi);
     }
 }
+void teksturi::muutosListaaja(){
+    int pituus = avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto.count();
+    QString muutos = ui->teksti->toPlainText().sliced(pituus);
+    muutosRakenne annettava(muutos,true);
+    if(muutos.count() > 0){
+        avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.append(annettava);
+        avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto = ui->teksti->toPlainText();
+    }
+}
+
+void teksturi::on_actionundo_triggered()
+{
+    for(int i=0; i < avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.count();i++){
+        qDebug() << avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista[i].muutos;
+    }
+
+}
+

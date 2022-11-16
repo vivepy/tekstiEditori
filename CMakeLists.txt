@@ -21,6 +21,9 @@ set(PROJECT_SOURCES
         teksturi.ui
         tiedostoohjain.h
         tiedostoohjain.cpp
+        muutosrakenne.h
+        muutosrakenne.cpp
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

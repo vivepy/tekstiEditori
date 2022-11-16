@@ -5,6 +5,7 @@
 #include "QListWidget"
 #include "tiedostoohjain.h"
 #include <QList>
+#include "muutosrakenne.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class teksturi; }
@@ -33,6 +34,9 @@ private slots:
 
     void on_actionQuit_triggered();
     void updatetiedostoLista();
+    void muutosListaaja();
+
+    void on_actionundo_triggered();
 
 private:
     Ui::teksturi *ui;
