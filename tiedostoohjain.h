@@ -13,6 +13,7 @@ class TiedostoOhjain
     QString tiedostoNimi {};
     QString tiedostoSisalto{};
     QList<muutosRakenne> muutosLista{};
+    QList<muutosRakenne> uusintaLista{};
     TiedostoOhjain();
     TiedostoOhjain(QString tNimi,QString tiedostoSisalto);
 };

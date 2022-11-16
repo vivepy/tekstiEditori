@@ -28,7 +28,9 @@ teksturi::teksturi(QWidget *parent)
         ui->teksti->setText(avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto);
     });
     connect(ui->teksti, &QTextEdit::textChanged, this, [=](){
-        muutosAjastin->start(750);
+        if(!undoMuutos) muutosAjastin->start(750);
+        else undoMuutos = false;
+
     });
     ui->tiedostoLista->setCurrentRow(0);
 
@@ -132,13 +134,16 @@ void teksturi::updatetiedostoLista(){
 void teksturi::muutosListaaja(){
     int pituus = avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto.count();
     QString muutos;
+    bool eteen;
     if( ui->teksti->toPlainText().count()-pituus > 0){
         muutos = ui->teksti->toPlainText().sliced(pituus);
+        eteen =  true;
     }
     else {
         muutos = avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto.sliced(ui->teksti->toPlainText().count());
+        eteen = false;
     }
-    muutosRakenne annettava(muutos,true);
+    muutosRakenne annettava(muutos,eteen);
     if(muutos.count() > 0){
         avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.append(annettava);
         avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto = ui->teksti->toPlainText();
@@ -147,9 +152,35 @@ void teksturi::muutosListaaja(){
 
 void teksturi::on_actionundo_triggered()
 {
+    qDebug() << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
+    if(avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.isEmpty()){
+        return;
+    }
+    undoMuutos = true;
+    avoimetTiedostot[ui->tiedostoLista->currentRow()].uusintaLista.append(avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.last());
+    QList<muutosRakenne> temp{avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista};
+    temp.removeLast();
+
     for(int i=0; i < avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.count();i++){
         qDebug() << avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista[i].muutos;
+
     }
+    qDebug() << "----------------------------------------------------------------";
+    if(!avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.last().suunta){
+        ui->teksti->setText(ui->teksti->toPlainText() + avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.last().muutos);
+
+    }
+    if(avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.last().suunta){
+        int leikkuu = avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.last().muutos.count();
+        ui->teksti->setText(ui->teksti->toPlainText().sliced(0,ui->teksti->toPlainText().count()-leikkuu));
+    }
+        avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista = temp;
+}
+
+
+
+void teksturi::on_actionredo_triggered()
+{
 
 }
 

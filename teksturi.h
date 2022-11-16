@@ -20,7 +20,7 @@ public:
     teksturi(QWidget *parent = nullptr);
     ~teksturi();
 
-private slots:
+private slots:    
 
     void on_actionSave_triggered();
 
@@ -38,7 +38,10 @@ private slots:
 
     void on_actionundo_triggered();
 
+    void on_actionredo_triggered();
+
 private:
     Ui::teksturi *ui;
+    bool undoMuutos{false};
 };
 #endif // TEKSTURI_H
