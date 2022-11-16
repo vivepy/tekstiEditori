@@ -12,14 +12,9 @@ teksturi::teksturi(QWidget *parent)
     ui->setupUi(this);
     ui->tiedostoLista->clear();
 
-//    QTimer muutosAjastin;
-//    muutosAjastin.setSingleShot(true);
-//    muutosAjastin.callOnTimeout();
     QTimer *muutosAjastin = new QTimer(this);
     muutosAjastin->setSingleShot(true);
     connect(muutosAjastin, &QTimer::timeout, this, &teksturi::muutosListaaja);
-
-
 
     TiedostoOhjain testi = TiedostoOhjain("testi yksi","File alavalikon alla olevat jutut toimii, muita ei ole vielä toteutettu");
     TiedostoOhjain kaksi = TiedostoOhjain("testi kaksi","testi2");
@@ -117,8 +112,9 @@ void teksturi::on_actionClose_file_triggered()
         return;
     }
     avoimetTiedostot.removeAt(ui->tiedostoLista->currentRow());
-    ui->tiedostoLista->setCurrentRow(0);
     updatetiedostoLista();
+    ui->tiedostoLista->setCurrentRow(0);
+
 }
 
 
@@ -135,7 +131,13 @@ void teksturi::updatetiedostoLista(){
 }
 void teksturi::muutosListaaja(){
     int pituus = avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto.count();
-    QString muutos = ui->teksti->toPlainText().sliced(pituus);
+    QString muutos;
+    if( ui->teksti->toPlainText().count()-pituus > 0){
+        muutos = ui->teksti->toPlainText().sliced(pituus);
+    }
+    else {
+        muutos = avoimetTiedostot[ui->tiedostoLista->currentRow()].tiedostoSisalto.sliced(ui->teksti->toPlainText().count());
+    }
     muutosRakenne annettava(muutos,true);
     if(muutos.count() > 0){
         avoimetTiedostot[ui->tiedostoLista->currentRow()].muutosLista.append(annettava);
